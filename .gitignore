@@ -7,7 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-amplify/node_modules
+amplify/node_module
 node_modules
 dist
 dist-ssr
