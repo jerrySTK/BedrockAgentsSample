@@ -1,9 +1,65 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Handler } from 'aws-lambda';
 import { LambdaInput } from './models/LambdaAgentInput';
+import axios, { AxiosResponse, AxiosError } from 'axios';
+import { ApiResponse } from './models/ApiResponse';
+
+const token = process.env.DENUE_TOKEN || "";
 
 export const handler: Handler = async (event: LambdaInput) => {
-  // your function code goes here
+  
+
   console.log(event);
-  return;
+
+  if (event.actionGroup === 'MexicoCompaniesCensus' && event.apiPath.indexOf('/consulta/BuscarEntidad/') > 0) {
+      try {
+        let criteria = '',entidad='',limit = '';
+        event.parameters.forEach(p => {
+          if (p.name === 'criteria') {
+            criteria = p.value
+          } else if (p.name === 'entidad') {
+            entidad = p.value
+          } else if (p.name === 'registros') {
+            limit = p.value
+          }
+        });
+
+        const data = await fetchCompaniesByCriteria(criteria, entidad, limit);
+        return data;
+
+      } catch (error) {
+        console.error('Error fetching companies:', error);
+      }
+  } 
+
+  return [];
+}
+
+
+async function fetchCompaniesByCriteria(criteria:string,entidad:string,limit:string): Promise<ApiResponse[]> {
+  try {
+    const encodedCriteria = encodeURIComponent(criteria);
+    
+    const response: AxiosResponse<ApiResponse[]> = await axios.get<ApiResponse[]>(`https://www.inegi.org.mx/app/api/denue/v1/consulta/BuscarEntidad/${encodedCriteria}/${entidad}/1/${limit}/${token}`);
+    
+    const data: ApiResponse[] = response.data;
+    
+    return data;
+  } catch (error) {
+    
+    const axiosError = error as AxiosError;
+    
+    if (axiosError.response) {
+    
+      console.error('Error status:', axiosError.response.status);
+      console.error('Error data:', axiosError.response.data);
+    } else if (axiosError.request) {
+    
+      console.error('No response received:', axiosError.request);
+    } else {
+    
+      console.error('Error message:', axiosError.message);
+    }
+    throw error;
+  }
 }
