@@ -72,6 +72,8 @@ export const handler: Handler = async (event: LambdaInput) => {
 async function fetchCompaniesByCriteria(criteria:string,entidad:string,limit:string): Promise<ApiResponse[]> {
   try {
     const encodedCriteria = encodeURIComponent(criteria);
+    console.log("Criteria", criteria);
+    console.log("EncodedCriteria", encodedCriteria);
     console.log("Querying",`https://www.inegi.org.mx/app/api/denue/v1/consulta/BuscarEntidad/${encodedCriteria}/${entidad}/1/${limit}/${token}`);
     const response: AxiosResponse<ApiResponse[]> = await axios.get<ApiResponse[]>(`https://www.inegi.org.mx/app/api/denue/v1/consulta/BuscarEntidad/${encodedCriteria}/${entidad}/1/${limit}/${token}`);
     
