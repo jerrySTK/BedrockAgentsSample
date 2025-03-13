@@ -16,7 +16,7 @@ export const handler: Handler = async (event: LambdaInput) => {
       try {
         let criteria = '',entidad='',limit = '';
         event.parameters.forEach(p => {
-          if (p.name === 'criteria') {
+          if (p.name === 'condicion') {
             criteria = p.value
           } else if (p.name === 'entidad') {
             entidad = p.value
