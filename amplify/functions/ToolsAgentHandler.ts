@@ -10,6 +10,7 @@ export const handler: Handler = async (event: LambdaInput) => {
   
 
   console.log(event);
+  console.log("Token",token);
 
   if (event.actionGroup === 'MexicoCompaniesCensus' && event.apiPath.indexOf('/consulta/BuscarEntidad/') > 0) {
       try {
@@ -71,7 +72,7 @@ export const handler: Handler = async (event: LambdaInput) => {
 async function fetchCompaniesByCriteria(criteria:string,entidad:string,limit:string): Promise<ApiResponse[]> {
   try {
     const encodedCriteria = encodeURIComponent(criteria);
-    
+    console.log("Querying",`https://www.inegi.org.mx/app/api/denue/v1/consulta/BuscarEntidad/${encodedCriteria}/${entidad}/1/${limit}/${token}`);
     const response: AxiosResponse<ApiResponse[]> = await axios.get<ApiResponse[]>(`https://www.inegi.org.mx/app/api/denue/v1/consulta/BuscarEntidad/${encodedCriteria}/${entidad}/1/${limit}/${token}`);
     
     const data: ApiResponse[] = response.data;
