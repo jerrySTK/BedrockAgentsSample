@@ -25,14 +25,46 @@ export const handler: Handler = async (event: LambdaInput) => {
         });
 
         const data = await fetchCompaniesByCriteria(criteria, entidad, limit);
-        return data;
+        return {
+          messageVersion: "1.0",
+          response: {
+              actionGroup: event.actionGroup,
+              apiPath: event.apiPath,
+              httpMethod: event.httpMethod,
+              httpStatusCode: 200,
+              responseBody: {
+                  "application/json": {
+                      body: JSON.stringify(data)
+                  }
+              }
+          },
+          sessionAttributes: event.sessionAttributes,
+          promptSessionAttributes: event.promptSessionAttributes
+        };
+        
+        
 
       } catch (error) {
         console.error('Error fetching companies:', error);
       }
   } 
 
-  return [];
+  return {
+    messageVersion: "1.0",
+    response: {
+        actionGroup: event.actionGroup,
+        apiPath: event.apiPath,
+        httpMethod: event.httpMethod,
+        httpStatusCode: 200,
+        responseBody: {
+            "application/json": {
+                body: JSON.stringify({data: 'no results'})
+            }
+        }
+    },
+    sessionAttributes: event.sessionAttributes,
+    promptSessionAttributes: event.promptSessionAttributes
+  };
 }
 
 
