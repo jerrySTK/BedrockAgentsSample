@@ -12,7 +12,7 @@ export const handler: Handler = async (event: LambdaInput) => {
   console.log(event);
   console.log("Token",token);
 
-  if (event.actionGroup === 'MexicoCompaniesCensus' && event.apiPath.indexOf('/consulta/BuscarEntidad/') > 0) {
+  if (event.actionGroup === 'MexicoCompaniesCensus' && event.apiPath.includes('/consulta/BuscarEntidad/')) {
       try {
         let criteria = '',entidad='',limit = '';
         event.parameters.forEach(p => {

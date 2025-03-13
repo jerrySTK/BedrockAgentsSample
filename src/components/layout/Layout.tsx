@@ -39,7 +39,7 @@ const Layout = ({ children }: LayoutProps) => {
       >
         <div className="p-4 flex justify-between items-center">
           <h1 className={`font-bold text-lg ${!isSidebarOpen && "md:hidden"}`}>
-            Gauzz Tools
+            Tools
           </h1>
           {isMobile && (
             <button
