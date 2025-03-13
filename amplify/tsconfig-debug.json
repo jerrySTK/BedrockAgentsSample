@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "rootDir": "./functions",
+    "strict": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "declaration": true,
+    "removeComments": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["functions/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
+}
