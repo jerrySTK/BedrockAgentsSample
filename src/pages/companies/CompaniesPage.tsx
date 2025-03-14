@@ -23,7 +23,7 @@ const CompaniesPage = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: "Hello! How can I help you today?",
+      text: "INEGI DENUE API",
       sender: "empresa",
       timestamp: new Date(),
     },
