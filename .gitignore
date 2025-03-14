@@ -8,6 +8,8 @@ pnpm-debug.log*
 lerna-debug.log*
 
 amplify/node_module
+amplify/dist
+internal
 node_modules
 dist
 dist-ssr
