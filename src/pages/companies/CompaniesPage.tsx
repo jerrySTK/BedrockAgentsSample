@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Send } from "lucide-react";
+import { getCurrentUser } from "aws-amplify/auth";
+import BedrockAgentService from "../../services/BedrockAgentService";
 
+const currentUser = await getCurrentUser();
 // Define message type
 type Message = {
   id: number;
@@ -9,58 +12,54 @@ type Message = {
   timestamp: Date;
 };
 
+// Initialize service
+const bedrockService = new BedrockAgentService(
+  import.meta.env.VITE_AWS_REGION,
+  import.meta.env.VITE_AGENT_ID,
+  import.meta.env.VITE_AGENT_ALIAS_ID
+);
+
 const CompaniesPage = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
       text: "Hello! How can I help you today?",
       sender: "empresa",
-      timestamp: new Date(Date.now() - 1000 * 60 * 5), // 5 minutes ago
-    },
-    {
-      id: 2,
-      text: "I have a question about your services.",
-      sender: "user",
-      timestamp: new Date(Date.now() - 1000 * 60 * 3), // 3 minutes ago
-    },
-    {
-      id: 3,
-      text: "Of course! What would you like to know?",
-      sender: "empresa",
-      timestamp: new Date(Date.now() - 1000 * 60), // 1 minute ago
+      timestamp: new Date(),
     },
   ]);
 
   const [newMessage, setNewMessage] = useState("");
 
-  const handleSendMessage = () => {
-    if (newMessage.trim() === "") return;
+  const handleSendMessage = async () => {
+    if (!newMessage.trim()) return;
 
-    // Add user message
     const userMessage: Message = {
       id: messages.length + 1,
       text: newMessage,
       sender: "user",
       timestamp: new Date(),
     };
+    setMessages((prev) => [...prev, userMessage]);
 
-    setMessages([...messages, userMessage]);
-    setNewMessage("");
+    try {
+      const botResponse = await bedrockService.sendMessage(
+        newMessage,
+        currentUser.userId
+      );
 
-    // Simulate response (after 1 second)
-    setTimeout(() => {
-      const empresaMessage: Message = {
+      const botMessage: Message = {
         id: messages.length + 2,
-        text: `Thank you for your message: "${newMessage}"`,
+        text: botResponse.toString(),
         sender: "empresa",
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, empresaMessage]);
-    }, 1000);
-  };
+      setMessages((prev) => [...prev, botMessage]);
+    } catch (error) {
+      console.error("Error in chat:", error);
+    }
 
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    setNewMessage("");
   };
 
   return (
@@ -84,10 +83,8 @@ const CompaniesPage = () => {
               }`}
             >
               <p>{message.text}</p>
-              <p
-                className={`text-xs mt-1 ${message.sender === "user" ? "text-blue-100" : "text-gray-500"}`}
-              >
-                {formatTime(message.timestamp)}
+              <p className="text-xs mt-1 text-gray-500">
+                {message.timestamp.toLocaleTimeString()}
               </p>
             </div>
           </div>

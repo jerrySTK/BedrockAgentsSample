@@ -25,7 +25,7 @@ a:hover {
 
 #root {
   margin: 0;
-  display: flex;
+  width: 100%;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -69,4 +69,12 @@ button:focus-visible {
 
 .content {
   flex-grow: 1;
+}
+
+.content-center {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
 }
